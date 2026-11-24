@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud CV Portal</title>
+    <title>My Cloud CV Vault</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0f172a;
             color: #f8fafc;
             margin: 0;
-            padding: 40px 20px;
+            padding: 30px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             background: #1e293b;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
-        h1 { color: #38bdf8; margin-top: 0; }
-        p { color: #94a3b8; font-size: 16px; }
-        .search-box {
+        h1 { color: #38bdf8; margin: 0 0 10px 0; }
+        p { color: #94a3b8; margin-bottom: 20px; }
+        #search {
             width: 100%;
             padding: 12px;
-            margin: 20px 0;
+            margin-bottom: 20px;
             border-radius: 8px;
             border: 1px solid #334155;
             background: #0f172a;
@@ -36,28 +36,107 @@
             box-sizing: border-box;
             font-size: 16px;
         }
-        .direct-access {
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .file-card {
             background: #334155;
             padding: 15px;
             border-radius: 8px;
-            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .direct-access code {
-            color: #38bdf8;
+        .file-name {
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
             font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
         }
+        .btn-view {
+            background: #0284c7;
+            color: white;
+        }
+        .btn-view:hover { background: #0369a1; }
+        .btn-download {
+            background: #10b981;
+            color: white;
+        }
+        .btn-download:hover { background: #059669; }
+        #loading { color: #38bdf8; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Cloud CV Repository</h1>
-        <p>Hosted on <b>Microsoft Azure (North Europe)</b> via automated CI/CD pipeline.</p>
+        <h1>Cloud CV Vault</h1>
+        <p>Directly hosted on Microsoft Azure Blob Storage (North Europe).</p>
         
-        <div class="direct-access">
-            <h3>Direct File Access:</h3>
-            <p>Every uploaded CV is instantly accessible anywhere via direct link:</p>
-            <code>https://[your-website-url]/[file-name].pdf</code>
-        </div>
+        <input type="text" id="search" placeholder="Search CVs by role or company name..." onkeyup="filterFiles()">
+        
+        <div id="loading">Loading your CVs from cloud...</div>
+        <div class="file-list" id="fileList"></div>
     </div>
+
+    <script>
+        const repoOwner = "Vaibhav-511";
+        const repoName = "azure-cv-repo";
+
+        async function loadCVs() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/`);
+                const files = await response.json();
+                
+                const list = document.getElementById('fileList');
+                document.getElementById('loading').style.display = 'none';
+
+                // Filter out non-CV files
+                const excluded = ['index.html', 'README.md', '.github', '404.html'];
+                const cvFiles = files.filter(f => f.type === 'file' && !excluded.includes(f.name));
+
+                if (cvFiles.length === 0) {
+                    list.innerHTML = '<p>No CV files detected.</p>';
+                    return;
+                }
+
+                cvFiles.forEach(file => {
+                    const card = document.createElement('div');
+                    card.className = 'file-card';
+                    card.innerHTML = `
+                        <span class="file-name">📄 ${file.name}</span>
+                        <div class="btn-group">
+                            <a href="${file.name}" target="_blank" class="btn btn-view">View</a>
+                            <a href="${file.name}" download class="btn btn-download">Download</a>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            } catch (err) {
+                document.getElementById('loading').innerText = "Failed to load files.";
+            }
+        }
+
+        function filterFiles() {
+            const input = document.getElementById('search').value.toLowerCase();
+            const cards = document.getElementsByClassName('file-card');
+            for (let card of cards) {
+                const name = card.querySelector('.file-name').innerText.toLowerCase();
+                card.style.display = name.includes(input) ? "flex" : "none";
+            }
+        }
+
+        loadCVs();
+    </script>
 </body>
 </html>
