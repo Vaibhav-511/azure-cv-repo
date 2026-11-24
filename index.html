@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud CV Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h1 { color: #38bdf8; margin-top: 0; }
+        p { color: #94a3b8; font-size: 16px; }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .direct-access {
+            background: #334155;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .direct-access code {
+            color: #38bdf8;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cloud CV Repository</h1>
+        <p>Hosted on <b>Microsoft Azure (North Europe)</b> via automated CI/CD pipeline.</p>
+        
+        <div class="direct-access">
+            <h3>Direct File Access:</h3>
+            <p>Every uploaded CV is instantly accessible anywhere via direct link:</p>
+            <code>https://[your-website-url]/[file-name].pdf</code>
+        </div>
+    </div>
+</body>
+</html>
